@@ -1,8 +1,9 @@
 # BrousseHub — AGENTS.md
 
 ## Mission
-BrousseHub est un hub web sobre et rapide pour centraliser des outils économiques liés à Dofus. La V1 contient cinq outils :
+BrousseHub est un hub web sobre et rapide pour centraliser des outils économiques liés à Dofus.
 
+La V1 contient cinq outils :
 1. Achat / Craft / Revente
 2. Tracker FM
 3. Marge FM
@@ -17,36 +18,37 @@ Phrase produit : « Bienvenue dans le Hub de La Brousse ».
 - Vite
 - React Router
 - CSS natif organisé autour de Design Tokens
-- Persistance locale pour le prototype, avec une couche prévue pour la synchronisation cloud par compte
+- Persistance locale pour le prototype
+- Couche de stockage pensée pour être remplacée par une synchronisation cloud par compte
 
 ## Principes produit
-- Aller droit au calcul utile : pas de dashboard décoratif ni de métriques inventées.
+- Aller directement au calcul utile : pas de dashboard décoratif ni de métriques inventées.
 - Chaque outil possède ses propres sauvegardes nommées.
-- Les données communes doivent pouvoir être mutualisées plus tard : items, recettes, ressources, runes et prix.
+- Ne pas introduire une notion globale de « projet » : les sauvegardes appartiennent aux outils.
+- Les données communes devront pouvoir être mutualisées plus tard : items, recettes, ressources, runes et prix.
 - Les calculs doivent être compréhensibles, déterministes et testables.
 - Les actions fréquentes doivent demander le moins de clics possible.
-- Ne jamais masquer un coût dans un calcul : distinguer coût brut, coût net, bénéfice, marge et ROI.
+- Toujours distinguer coût brut, coût net, bénéfice, marge et ROI.
 
 ## Design system
-Toutes les valeurs de présentation réutilisables doivent venir de `src/styles/tokens.css` :
-- couleurs et états sémantiques ;
+La source de vérité visuelle est `src/styles/tokens.css`.
+
+Une valeur réutilisable ou une règle de design doit passer par un token :
+- couleurs primitives et sémantiques ;
 - typographies ;
 - espacements ;
 - rayons ;
 - bordures ;
 - ombres ;
-- dimensions de contrôles ;
-- largeurs de layout ;
-- mouvements et focus.
+- hauteurs et largeurs de composants ;
+- états hover, focus, active, disabled et danger ;
+- mouvements et z-index.
 
-Éviter les valeurs CSS arbitraires dans les composants. Si une valeur se répète ou représente une règle de design, créer ou réutiliser un token.
-
-Direction visuelle : sobre, épurée, claire, contrastée, avec un accent vert forêt assorti à l’identité « Brousse ». Pas de gradients décoratifs, de glassmorphism, d’effets néon ni d’empilement gratuit de cartes.
+Direction visuelle : sobre, épurée, claire, contrastée, avec un accent vert forêt lié à l’identité « Brousse ». Pas de gradient décoratif, glassmorphism, néon ou accumulation de cartes.
 
 ## Architecture React
 - `App.tsx` reste un fichier de composition et de routes.
 - Les composants génériques vont dans `src/components`.
-- Les primitives réutilisables vont dans `src/components/ui`.
 - Les écrans métiers vont dans `src/pages`.
 - Les helpers purs vont dans `src/lib`.
 - Les hooks partagés vont dans `src/hooks`.
@@ -55,31 +57,32 @@ Direction visuelle : sobre, épurée, claire, contrastée, avec un accent vert f
 - Les mises à jour de tableaux doivent rester immuables.
 
 ## Accessibilité
-- Tous les champs ont un label.
+- Tous les champs ont un label ou un nom accessible.
 - Navigation et actions accessibles au clavier.
 - Focus visible et cohérent.
-- Couleur jamais utilisée comme seul moyen de transmettre une information.
-- Zones tactiles d’au moins 40 px lorsque possible.
+- La couleur n’est jamais le seul moyen de transmettre une information.
+- Les zones tactiles visent au moins 40 px lorsque possible.
 
 ## Responsive
-- Desktop : navigation latérale + zone de travail.
-- Mobile : navigation compacte, outils utilisables sans débordement horizontal obligatoire.
-- Les tableaux denses peuvent utiliser un conteneur scrollable plutôt que de casser leur structure métier.
+- Desktop : navigation latérale + grande zone de travail.
+- Tablette/mobile : navigation compacte.
+- Les tableaux denses utilisent un conteneur horizontal scrollable plutôt que de déformer leurs colonnes.
 
 ## Données et sauvegardes
 - Les sauvegardes V1 sont versionnées dans `localStorage` par outil.
-- Préfixe recommandé : `broussehub:v1:`.
+- Préfixe : `broussehub:v1:`.
 - Ne jamais coupler la logique de calcul au mécanisme de stockage.
-- La future synchronisation par compte doit pouvoir remplacer le repository local sans réécrire les pages.
+- La future synchronisation multi-ordinateurs doit pouvoir remplacer le repository local sans réécrire les pages.
+- Aucune donnée de démonstration ne doit être présentée comme une donnée réelle du joueur.
 
 ## Qualité
-Avant livraison d’une modification :
-1. `npm run build`
-2. `npm run lint`
+Avant livraison :
+1. `npm run check`
+2. `npm run build`
 3. vérifier les cinq routes principales ;
-4. vérifier un viewport desktop et mobile ;
-5. vérifier que les calculs réagissent aux modifications de champs ;
-6. vérifier qu’aucune donnée de démonstration n’est présentée comme une donnée réelle du joueur.
+4. vérifier desktop et mobile ;
+5. vérifier que les calculs réagissent aux champs ;
+6. vérifier les sauvegardes nommées de chaque outil.
 
 ## Nommage
 - UI et textes visibles : français.

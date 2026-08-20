@@ -24,3 +24,8 @@ export function ArrowIcon(props: IconProps) { return <IconBase {...props}><path 
 export function SyncIcon(props: IconProps) { return <IconBase {...props}><path d="M20 7h-5V2" /><path d="M4 17h5v5" /><path d="M5.5 9a7 7 0 0 1 11.8-3L20 7" /><path d="M18.5 15a7 7 0 0 1-11.8 3L4 17" /></IconBase> }
 export function UndoIcon(props: IconProps) { return <IconBase {...props}><path d="M9 7 5 11l4 4" /><path d="M5 11h8a6 6 0 0 1 6 6" /></IconBase> }
 export function ResetIcon(props: IconProps) { return <IconBase {...props}><path d="M5 7v5h5" /><path d="M5.5 12a7 7 0 1 0 2-5" /></IconBase> }
+export function SunIcon(props: IconProps) { return <IconBase {...props}><circle cx="12" cy="12" r="3.5" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.42 1.42" /><path d="m17.65 17.65 1.42 1.42" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m4.93 19.07 1.42-1.42" /><path d="m17.65 6.35 1.42-1.42" /></IconBase> }
+export function MoonIcon(props: IconProps) { return <IconBase {...props}><path d="M20.5 15.4A8.5 8.5 0 0 1 8.6 3.5 8.5 8.5 0 1 0 20.5 15.4Z" /></IconBase> }
+export function UploadIcon(props: IconProps) { return <IconBase {...props}><path d="M12 16V4" /><path d="m7 9 5-5 5 5" /><path d="M5 20h14" /></IconBase> }
+export function ImageIcon(props: IconProps) { return <IconBase {...props}><rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="8.5" cy="9" r="1.5" /><path d="m5 18 5-5 3 3 2-2 4 4" /></IconBase> }
+export function CheckIcon(props: IconProps) { return <IconBase {...props}><path d="m5 12 4 4L19 6" /></IconBase> }

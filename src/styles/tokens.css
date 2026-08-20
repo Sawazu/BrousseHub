@@ -1,0 +1,185 @@
+:root {
+  color-scheme: light;
+
+  /* Primitive palette */
+  --forest-50: #edf5f1;
+  --forest-100: #dcebe4;
+  --forest-200: #bfd8cc;
+  --forest-300: #97bead;
+  --forest-400: #6d9f89;
+  --forest-500: #4b846d;
+  --forest-600: #356a56;
+  --forest-700: #2b5647;
+  --forest-800: #24453a;
+  --forest-900: #1d382f;
+
+  --stone-0: #ffffff;
+  --stone-25: #fbfcfb;
+  --stone-50: #f5f7f6;
+  --stone-100: #edf1ef;
+  --stone-200: #dde4e0;
+  --stone-300: #c7d0cb;
+  --stone-400: #a7b2ac;
+  --stone-500: #7d8a83;
+  --stone-600: #5d6963;
+  --stone-700: #414b46;
+  --stone-800: #29322e;
+  --stone-900: #17201c;
+
+  --red-50: #fbefef;
+  --red-600: #b54848;
+  --red-700: #963b3b;
+  --amber-50: #fdf5e7;
+  --amber-600: #9a6418;
+  --blue-50: #edf4f7;
+  --blue-600: #3e6d82;
+
+  /* Semantic colors */
+  --color-canvas: var(--stone-50);
+  --color-surface: var(--stone-0);
+  --color-surface-subtle: var(--stone-25);
+  --color-surface-muted: var(--stone-100);
+  --color-surface-hover: #f0f4f2;
+  --color-surface-active: #e7eeea;
+  --color-topbar: rgb(245 247 246 / 92%);
+  --color-text: var(--stone-900);
+  --color-text-secondary: var(--stone-600);
+  --color-text-muted: var(--stone-500);
+  --color-text-disabled: var(--stone-400);
+  --color-text-inverse: var(--stone-0);
+  --color-border-subtle: var(--stone-100);
+  --color-border: var(--stone-200);
+  --color-border-strong: var(--stone-300);
+  --color-border-hover: #acbbb3;
+  --color-accent: var(--forest-600);
+  --color-accent-hover: var(--forest-700);
+  --color-accent-active: var(--forest-800);
+  --color-accent-soft: var(--forest-50);
+  --color-accent-soft-hover: var(--forest-100);
+  --color-accent-contrast: var(--stone-0);
+  --color-positive: #287454;
+  --color-positive-soft: #e8f3ed;
+  --color-warning: var(--amber-600);
+  --color-warning-soft: var(--amber-50);
+  --color-danger: var(--red-600);
+  --color-danger-hover: var(--red-700);
+  --color-danger-soft: var(--red-50);
+  --color-info: var(--blue-600);
+  --color-info-soft: var(--blue-50);
+  --color-focus-ring: rgb(53 106 86 / 22%);
+  --color-selection: var(--forest-100);
+
+  /* Typography */
+  --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-size-10: 0.625rem;
+  --font-size-11: 0.6875rem;
+  --font-size-12: 0.75rem;
+  --font-size-13: 0.8125rem;
+  --font-size-14: 0.875rem;
+  --font-size-15: 0.9375rem;
+  --font-size-16: 1rem;
+  --font-size-18: 1.125rem;
+  --font-size-20: 1.25rem;
+  --font-size-24: 1.5rem;
+  --font-size-30: 1.875rem;
+  --font-size-36: 2.25rem;
+  --font-size-48: 3rem;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.18;
+  --line-height-snug: 1.35;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.65;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.045em;
+
+  /* Spacing — 4px base */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-14: 3.5rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* Radius, borders, elevation */
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-pill: 999px;
+  --border-width: 1px;
+  --border-width-strong: 2px;
+  --shadow-xs: 0 1px 2px rgb(23 32 28 / 4%);
+  --shadow-sm: 0 4px 12px rgb(23 32 28 / 6%);
+  --shadow-md: 0 16px 40px rgb(23 32 28 / 9%);
+  --shadow-focus: 0 0 0 4px var(--color-focus-ring);
+
+  /* Component sizing */
+  --control-height-xs: 1.75rem;
+  --control-height-sm: 2rem;
+  --control-height-md: 2.5rem;
+  --control-height-lg: 2.75rem;
+  --control-height-xl: 3rem;
+  --icon-size-xs: 0.875rem;
+  --icon-size-sm: 1rem;
+  --icon-size-md: 1.125rem;
+  --icon-size-lg: 1.25rem;
+  --icon-size-xl: 1.5rem;
+  --sidebar-width: 15.5rem;
+  --topbar-height: 4rem;
+  --content-max-width: 92rem;
+  --content-reading-width: 48rem;
+  --content-gutter: 2rem;
+  --panel-header-height: 3.5rem;
+  --table-row-height: 3rem;
+  --field-max-width: 30rem;
+
+  /* Component states */
+  --button-primary-bg: var(--color-accent);
+  --button-primary-bg-hover: var(--color-accent-hover);
+  --button-primary-bg-active: var(--color-accent-active);
+  --button-primary-text: var(--color-accent-contrast);
+  --button-secondary-bg: var(--color-surface);
+  --button-secondary-bg-hover: var(--color-surface-hover);
+  --button-secondary-border: var(--color-border);
+  --button-secondary-border-hover: var(--color-border-hover);
+  --input-bg: var(--color-surface);
+  --input-bg-disabled: var(--color-surface-muted);
+  --input-border: var(--color-border);
+  --input-border-hover: var(--color-border-hover);
+  --input-border-focus: var(--color-accent);
+  --input-text: var(--color-text);
+  --input-placeholder: var(--color-text-disabled);
+  --opacity-disabled: 0.48;
+
+  /* Motion & layering */
+  --duration-instant: 80ms;
+  --duration-fast: 120ms;
+  --duration-normal: 180ms;
+  --duration-slow: 260ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --z-sidebar: 20;
+  --z-topbar: 30;
+  --z-popover: 50;
+  --z-modal: 100;
+}
+
+@media (max-width: 900px) {
+  :root { --content-gutter: 1rem; --topbar-height: 3.5rem; }
+}

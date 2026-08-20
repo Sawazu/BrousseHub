@@ -16,6 +16,7 @@ export type AggregatedRunePurchase = {
 }
 
 const purchasePattern = /([\d][\d\s\u00a0\u202f]*)\s*[xX×]\s*[\[({|]?\s*(Rune\s+[^\]\)}|]+?)\s*[\])}|]?\s*\(\s*([\d][\d\s\u00a0\u202f.,]*)\s*ka(?:m|rn)as?\s*\)/i
+const continuationPricePattern = /^\s*\(?\s*[\d][\d\s\u00a0\u202f.,]*\s*ka(?:m|rn)as?\s*\)?/i
 
 function parseInteger(value: string) {
   const digits = value.replace(/\D/g, '')
@@ -43,9 +44,10 @@ export function parseRunePurchases(text: string, sourceName: string, sourceIndex
 
     let candidate = line
     let match = candidate.match(purchasePattern)
+    const nextLine = lines[index + 1]?.trim() ?? ''
 
-    if (!match && index + 1 < lines.length && /kamas?/i.test(lines[index + 1])) {
-      candidate = `${line} ${lines[index + 1].trim()}`
+    if (!match && nextLine && continuationPricePattern.test(nextLine)) {
+      candidate = `${line} ${nextLine}`
       match = candidate.match(purchasePattern)
     }
 

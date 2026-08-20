@@ -17,11 +17,22 @@ function freshState(): StuffState {
   ] }
 }
 
+function automaticChoice(item: StuffItem) {
+  const hasDirectPrice = item.directPrice > 0
+  const hasCraftCost = item.craftCost > 0
+  if (!hasDirectPrice && !hasCraftCost) return 'À renseigner'
+  if (!hasCraftCost || (hasDirectPrice && item.directPrice <= item.craftCost)) return 'Acheter'
+  return 'Crafter'
+}
+
 function selectedCost(item: StuffItem) {
   if (item.owned) return 0
   if (item.choice === 'Acheter') return item.directPrice
   if (item.choice === 'Crafter') return item.craftCost
-  return Math.min(item.directPrice || Number.POSITIVE_INFINITY, item.craftCost || Number.POSITIVE_INFINITY)
+  const autoChoice = automaticChoice(item)
+  if (autoChoice === 'Acheter') return item.directPrice
+  if (autoChoice === 'Crafter') return item.craftCost
+  return 0
 }
 
 export function StuffCalculatorPage() {
@@ -58,7 +69,7 @@ export function StuffCalculatorPage() {
           <div className="panel-header"><h2>Équipements</h2><button className="btn btn-secondary" type="button" onClick={() => setState((current) => ({ ...current, items: [...current.items, { id: uid('stuff'), name: '', directPrice: 0, craftCost: 0, choice: 'Auto', owned: false }] }))}><PlusIcon /> Item</button></div>
           <div className="table-wrap"><table className="data-table"><thead><tr><th>Item</th><th>Achat direct</th><th>Coût craft</th><th>Choix</th><th>Retenu</th><th>Obtenu</th><th aria-label="Actions" /></tr></thead><tbody>
             {state.items.map((item) => {
-              const autoChoice = item.directPrice <= item.craftCost ? 'Acheter' : 'Crafter'
+              const autoChoice = automaticChoice(item)
               const retained = item.owned ? 'Déjà obtenu' : item.choice === 'Auto' ? autoChoice : item.choice
               return <tr key={item.id}><td><input className="table-input" value={item.name} onChange={(event) => updateItem(item.id, { name: event.target.value })} placeholder="Nom de l’item" /></td><td><input className="table-input table-input-number" type="number" min="0" value={item.directPrice} onChange={(event) => updateItem(item.id, { directPrice: toNumber(event.target.value) })} /></td><td><input className="table-input table-input-number" type="number" min="0" value={item.craftCost} onChange={(event) => updateItem(item.id, { craftCost: toNumber(event.target.value) })} /></td><td><select className="select" value={item.choice} onChange={(event) => updateItem(item.id, { choice: event.target.value as StuffItem['choice'] })}><option>Auto</option><option>Acheter</option><option>Crafter</option></select></td><td><span className={`badge ${retained === 'Déjà obtenu' ? 'badge-positive' : retained === 'Crafter' ? 'badge-info' : ''}`}>{retained}</span></td><td><input type="checkbox" checked={item.owned} onChange={(event) => updateItem(item.id, { owned: event.target.checked })} aria-label={`${item.name || 'Item'} obtenu`} /></td><td><button className="btn btn-danger btn-icon" type="button" aria-label={`Supprimer ${item.name || 'l’item'}`} onClick={() => setState((current) => ({ ...current, items: current.items.filter((entry) => entry.id !== item.id) }))}><TrashIcon /></button></td></tr>
             })}

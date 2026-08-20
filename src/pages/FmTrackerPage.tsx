@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react'
 import { Metric } from '../components/Metric'
+import { ScreenshotRuneImport } from '../components/ScreenshotRuneImport'
 import { PlusIcon, ResetIcon, TrashIcon, UndoIcon } from '../components/icons'
 import { SaveBar } from '../components/SaveBar'
 import { ToolHeader } from '../components/ToolHeader'
 import { useToolSaves } from '../hooks/useToolSaves'
 import { formatKamas, toNumber, uid } from '../lib/format'
+import { aggregateRunePurchases, type ParsedRunePurchase } from '../lib/runePurchaseParser'
 
 type RuneUse = { id: string; rune: string; quantity: number; unitPrice: number; attempt: number }
 export type FmTrackerState = { itemName: string; baseCost: number; mode: 'Classique' | 'Over' | 'Exo'; status: 'En cours' | 'Réussi' | 'Abandonné' | 'Conservé'; currentAttempt: number; runes: RuneUse[] }
@@ -32,19 +34,36 @@ export function FmTrackerPage() {
   function addRune(rune = '') { setState((current) => ({ ...current, runes: [...current.runes, { id: uid('rune'), rune, quantity: 1, unitPrice: 0, attempt: current.currentAttempt }] })) }
   function updateRune(id: string, key: keyof Omit<RuneUse, 'id'>, value: string | number) { setState((current) => ({ ...current, runes: current.runes.map((row) => row.id === id ? { ...row, [key]: key === 'rune' ? value : toNumber(value) } : row) })) }
 
+  function importRunePurchases(purchases: ParsedRunePurchase[]) {
+    const groups = aggregateRunePurchases(purchases)
+    setState((current) => ({
+      ...current,
+      runes: [
+        ...current.runes,
+        ...groups.map((group) => ({
+          id: uid('rune'),
+          rune: group.rune,
+          quantity: group.quantity,
+          unitPrice: group.unitPrice,
+          attempt: current.currentAttempt,
+        })),
+      ],
+    }))
+  }
+
   return (
     <>
-      <ToolHeader title="Tracker FM" description="Enregistre les runes au fil de la FM et garde le coût réel de la session visible en permanence." actions={<><button className="btn btn-secondary" type="button" disabled={!state.runes.length} onClick={() => setState((current) => ({ ...current, runes: current.runes.slice(0, -1) }))}><UndoIcon /> Annuler dernière rune</button><button className="btn btn-secondary" type="button" onClick={() => setState((current) => ({ ...current, currentAttempt: current.currentAttempt + 1 }))}>Tentative suivante</button><button className="btn btn-secondary" type="button" onClick={() => setState(freshState())}><ResetIcon /> Réinitialiser</button></>} />
+      <ToolHeader title="Tracker FM" description="Suis le coût réel de ta FM et importe directement tes achats de runes depuis des captures du chat Dofus." actions={<><button className="btn btn-secondary" type="button" disabled={!state.runes.length} onClick={() => setState((current) => ({ ...current, runes: current.runes.slice(0, -1) }))}><UndoIcon /> Annuler dernière rune</button><button className="btn btn-secondary" type="button" onClick={() => setState((current) => ({ ...current, currentAttempt: current.currentAttempt + 1 }))}>Tentative suivante</button><button className="btn btn-secondary" type="button" onClick={() => setState(freshState())}><ResetIcon /> Réinitialiser</button></>} />
 
       <div className="metrics-strip">
-        <Metric label="Coût des runes" value={formatKamas(totals.runeCost)} detail={`${totals.runeCount} runes`} />
+        <Metric label="Coût des runes" value={formatKamas(totals.runeCost)} detail={`${totals.runeCount.toLocaleString('fr-FR')} runes`} />
         <Metric label="Tentatives" value={String(totals.attemptCount)} detail={`Tentative active : ${state.currentAttempt}`} />
         <Metric label="Coût moyen / tentative" value={formatKamas(totals.averageAttempt)} />
         <Metric label="Coût total de l’objet" value={formatKamas(totals.totalCost)} detail={`Base : ${formatKamas(state.baseCost)}`} />
       </div>
 
       <div className="section-stack">
-        <section className="panel">
+        <section className="panel session-panel">
           <div className="panel-header"><h2>Session</h2><span className={`badge ${state.status === 'Réussi' ? 'badge-positive' : state.status === 'En cours' ? 'badge-info' : 'badge-warning'}`}>{state.status}</span></div>
           <div className="panel-body"><div className="form-grid">
             <div className="field"><label htmlFor="fm-item">Item</label><input id="fm-item" className="input" value={state.itemName} onChange={(event) => setState({ ...state, itemName: event.target.value })} /></div>
@@ -54,11 +73,13 @@ export function FmTrackerPage() {
           </div></div>
         </section>
 
-        <section className="panel">
-          <div className="panel-header"><h2>Runes utilisées</h2><button className="btn btn-secondary" type="button" onClick={() => addRune()}><PlusIcon /> Rune</button></div>
+        <ScreenshotRuneImport onImport={importRunePurchases} />
+
+        <section className="panel rune-panel">
+          <div className="panel-header"><div><h2>Runes utilisées</h2><p className="panel-subtitle">Les achats importés d’un même type de rune sont regroupés avec leur prix unitaire moyen.</p></div><button className="btn btn-secondary" type="button" onClick={() => addRune()}><PlusIcon /> Rune</button></div>
           <div className="panel-body panel-body-compact-bottom"><div className="save-bar" aria-label="Ajout rapide de rune">{quickRunes.map((rune) => <button key={rune} className="btn btn-secondary" type="button" onClick={() => addRune(rune)}>{rune}</button>)}</div></div>
-          <div className="table-wrap"><table className="data-table"><thead><tr><th>Rune</th><th>Tentative</th><th>Quantité</th><th>Prix unitaire</th><th>Coût</th><th aria-label="Actions" /></tr></thead><tbody>
-            {state.runes.map((row) => <tr key={row.id}><td><input className="table-input" value={row.rune} onChange={(event) => updateRune(row.id, 'rune', event.target.value)} placeholder="Rune" /></td><td><input className="table-input table-input-number" type="number" min="1" value={row.attempt} onChange={(event) => updateRune(row.id, 'attempt', event.target.value)} /></td><td><input className="table-input table-input-number" type="number" min="0" value={row.quantity} onChange={(event) => updateRune(row.id, 'quantity', event.target.value)} /></td><td><input className="table-input table-input-number" type="number" min="0" value={row.unitPrice} onChange={(event) => updateRune(row.id, 'unitPrice', event.target.value)} /></td><td className="table-number">{formatKamas(row.quantity * row.unitPrice)}</td><td><button className="btn btn-danger btn-icon" type="button" aria-label={`Supprimer ${row.rune || 'la rune'}`} onClick={() => setState((current) => ({ ...current, runes: current.runes.filter((entry) => entry.id !== row.id) }))}><TrashIcon /></button></td></tr>)}
+          <div className="table-wrap"><table className="data-table"><thead><tr><th>Rune</th><th>Tentative</th><th>Quantité</th><th>Prix unitaire moyen</th><th>Coût</th><th aria-label="Actions" /></tr></thead><tbody>
+            {state.runes.map((row) => <tr key={row.id}><td><input className="table-input" value={row.rune} onChange={(event) => updateRune(row.id, 'rune', event.target.value)} placeholder="Rune" /></td><td><input className="table-input table-input-number" type="number" min="1" value={row.attempt} onChange={(event) => updateRune(row.id, 'attempt', event.target.value)} /></td><td><input className="table-input table-input-number" type="number" min="0" value={row.quantity} onChange={(event) => updateRune(row.id, 'quantity', event.target.value)} /></td><td><input className="table-input table-input-number" type="number" min="0" step="any" value={row.unitPrice} onChange={(event) => updateRune(row.id, 'unitPrice', event.target.value)} /></td><td className="table-number">{formatKamas(row.quantity * row.unitPrice)}</td><td><button className="btn btn-danger btn-icon" type="button" aria-label={`Supprimer ${row.rune || 'la rune'}`} onClick={() => setState((current) => ({ ...current, runes: current.runes.filter((entry) => entry.id !== row.id) }))}><TrashIcon /></button></td></tr>)}
           </tbody></table></div>
         </section>
 

@@ -4,10 +4,19 @@ export type Theme = 'light' | 'dark'
 
 const STORAGE_KEY = 'broussehub:v1:theme'
 
-function getInitialTheme(): Theme {
-  const stored = window.localStorage.getItem(STORAGE_KEY)
-  if (stored === 'light' || stored === 'dark') return stored
+function getPreferredTheme(): Theme {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
+function getInitialTheme(): Theme {
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY)
+    if (stored === 'light' || stored === 'dark') return stored
+  } catch {
+    return getPreferredTheme()
+  }
+
+  return getPreferredTheme()
 }
 
 export function useTheme() {
@@ -16,7 +25,12 @@ export function useTheme() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme
     document.documentElement.style.colorScheme = theme
-    window.localStorage.setItem(STORAGE_KEY, theme)
+
+    try {
+      window.localStorage.setItem(STORAGE_KEY, theme)
+    } catch {
+      // The theme still applies for the current session when storage is unavailable.
+    }
   }, [theme])
 
   return {

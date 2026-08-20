@@ -7,15 +7,17 @@
     <meta name="description" content="Broussehub — le Hub de La Brousse pour calculer crafts, FM, stuffs et montées de métiers." />
     <script>
       (() => {
+        const preferredTheme = () => matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+
         try {
           const stored = localStorage.getItem('broussehub:v1:theme')
-          const theme = stored === 'light' || stored === 'dark'
-            ? stored
-            : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+          const theme = stored === 'light' || stored === 'dark' ? stored : preferredTheme()
           document.documentElement.dataset.theme = theme
           document.documentElement.style.colorScheme = theme
         } catch {
-          document.documentElement.dataset.theme = 'light'
+          const theme = preferredTheme()
+          document.documentElement.dataset.theme = theme
+          document.documentElement.style.colorScheme = theme
         }
       })()
     </script>

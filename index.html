@@ -3,8 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#356a56" />
+    <meta name="theme-color" content="#2f9a3d" />
     <meta name="description" content="Broussehub — le Hub de La Brousse pour calculer crafts, FM, stuffs et montées de métiers." />
+    <script>
+      (() => {
+        try {
+          const stored = localStorage.getItem('broussehub:v1:theme')
+          const theme = stored === 'light' || stored === 'dark'
+            ? stored
+            : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+          document.documentElement.dataset.theme = theme
+          document.documentElement.style.colorScheme = theme
+        } catch {
+          document.documentElement.dataset.theme = 'light'
+        }
+      })()
+    </script>
     <title>Broussehub</title>
   </head>
   <body>
